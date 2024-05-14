@@ -22,8 +22,8 @@ public class DepartmentController {
     }
 
     @GetMapping("/{nameDepartment}")
-    public ResponseEntity<DepartmentDto> findDepartmentByName(@PathVariable("nameDepartmen") String nameDepartmen){
-        return ResponseEntity.ok(departmentService.findDepartmentByName(nameDepartmen));
+    public ResponseEntity<DepartmentDto> findDepartmentByName(@PathVariable("nameDepartment") String nameDepartment){
+        return ResponseEntity.ok(departmentService.findDepartmentByName(nameDepartment));
     }
 
     @PostMapping

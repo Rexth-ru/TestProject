@@ -30,7 +30,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDto findDepartmentByName(String nameDepartment) {
-        Department departmentDto = departmentRepository.findDepartmentByNameDepartment(nameDepartment).orElseThrow(NotFoundException::new);
+        Department departmentDto = departmentRepository.findByNameDepartmentIgnoreCase(nameDepartment).orElseThrow(NotFoundException::new);
         return departmentMapper.toDepartmentDto(departmentDto);
     }
 

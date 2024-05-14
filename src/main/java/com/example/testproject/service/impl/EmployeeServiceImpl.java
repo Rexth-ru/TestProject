@@ -1,8 +1,10 @@
 package com.example.testproject.service.impl;
 
 import com.example.testproject.dto.EmployeeDTO;
+import com.example.testproject.dto.EmployeeDTOForXML;
 import com.example.testproject.exception.NotFoundException;
 import com.example.testproject.mapper.EmployeeMapper;
+import com.example.testproject.model.Department;
 import com.example.testproject.model.Employee;
 import com.example.testproject.repository.DepartmentRepository;
 import com.example.testproject.repository.EmployeeRepository;
@@ -32,8 +34,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<EmployeeDTOForXML> forExport(){
+
+        return  employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "familyName"))
+                .stream()
+                .map(employeeMapper::toEmployeeDto)
+                .map(employeeMapper::toEmployeeDtoForXML)
+                .toList();
+//        return this.findAll().stream().map(employeeMapper::toEmployeeDtoForXML)
+//                .toList();
+    }
+
+    @Override
     public List<EmployeeDTO> findByDepartmentName(String departmentName) {
-        List<Employee> employees = employeeRepository.findByDepartmentNameDepartmentIgnoreCase(departmentName).orElseThrow(NotFoundException::new);
+        Department department = departmentRepository.findByNameDepartmentIgnoreCase(departmentName).orElseThrow(NotFoundException::new);
+        List<Employee> employees = employeeRepository.findByDepartment(department).orElseThrow(NotFoundException::new);
 
         return employees.stream().map(employeeMapper::toEmployeeDto).toList();
     }

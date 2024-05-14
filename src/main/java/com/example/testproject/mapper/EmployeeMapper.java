@@ -1,6 +1,7 @@
 package com.example.testproject.mapper;
 
 import com.example.testproject.dto.EmployeeDTO;
+import com.example.testproject.dto.EmployeeDTOForXML;
 import com.example.testproject.model.Employee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,4 +13,5 @@ import org.mapstruct.ReportingPolicy;
 public interface EmployeeMapper {
     @Mapping(target = "departmentId", source = "employee.department.id")
     EmployeeDTO toEmployeeDto(Employee employee);
+    EmployeeDTOForXML toEmployeeDtoForXML(EmployeeDTO employeeDTO);
 }
