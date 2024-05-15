@@ -6,72 +6,21 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@XmlRootElement
+@XmlRootElement(name = "employees")
 public class EmployeeDTOForXML {
-    private Integer id;
-    private String name;
-    private String surname;
-    private String familyName;
-    private String phone;
-    private Date birthday;
-    private Integer departmentId;
+    private List<EmployeeForXML> employeeDTOList;
 
-    @XmlElement
-    public String getName() {
-        return name;
+    @XmlElement(name = "employee")
+    public List<EmployeeForXML> getEmployeeDTOList() {
+        return employeeDTOList;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @XmlElement
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    @XmlElement
-    public String getFamilyName() {
-        return familyName;
-    }
-
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
-
-    @XmlElement
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    @XmlElement
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    @XmlElement
-    public Integer getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Integer departmentId) {
-        this.departmentId = departmentId;
+    public void setEmployeeDTOList(List<EmployeeForXML> employeeDTOList) {
+        this.employeeDTOList = employeeDTOList;
     }
 }

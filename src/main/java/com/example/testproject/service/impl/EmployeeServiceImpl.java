@@ -2,6 +2,7 @@ package com.example.testproject.service.impl;
 
 import com.example.testproject.dto.EmployeeDTO;
 import com.example.testproject.dto.EmployeeDTOForXML;
+import com.example.testproject.dto.EmployeeForXML;
 import com.example.testproject.exception.NotFoundException;
 import com.example.testproject.mapper.EmployeeMapper;
 import com.example.testproject.model.Department;
@@ -14,6 +15,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
 import java.util.List;
 
 @Service
@@ -26,23 +31,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeDTO> findAll() {
-
-        return employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "familyName"))
-                .stream()
-                .map(employeeMapper::toEmployeeDto)
-                .toList();
+        List<EmployeeDTO> employeeDTOList = getAllBySort();
+        if (employeeDTOList.isEmpty()) throw new NotFoundException("Сисок пуст");
+        return employeeDTOList;
     }
 
     @Override
-    public List<EmployeeDTOForXML> forExport(){
+    public String forExport() throws JAXBException {
+        List<EmployeeForXML> employeeDTOList = getAllBySort().stream().map(employeeMapper::toEmployeeForXML).toList();
+        if (employeeDTOList.isEmpty()) throw new NotFoundException("Сисок пуст");
+        JAXBContext context = JAXBContext.newInstance(EmployeeDTOForXML.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        return  employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "familyName"))
-                .stream()
-                .map(employeeMapper::toEmployeeDto)
-                .map(employeeMapper::toEmployeeDtoForXML)
-                .toList();
-//        return this.findAll().stream().map(employeeMapper::toEmployeeDtoForXML)
-//                .toList();
+        StringWriter writer = new StringWriter();
+        marshaller.marshal(new EmployeeDTOForXML(employeeDTOList), writer);
+
+        return writer.toString();
     }
 
     @Override
@@ -76,12 +81,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO updateEmployee(EmployeeDTO employeeDTO, Integer id) {
         Employee employee = findById(id);
-       employee.setFamilyName(employeeDTO.familyName());
-       employee.setName(employeeDTO.name());
-       employee.setSurname(employeeDTO.surname());
-       employee.setBirthday(employeeDTO.birthday());
-       employee.setPhone(employeeDTO.phone());
-       employee.setDepartment(departmentRepository.findById(employeeDTO.departmentId()).orElseThrow(NotFoundException::new));
+        employee.setFamilyName(employeeDTO.familyName());
+        employee.setName(employeeDTO.name());
+        employee.setSurname(employeeDTO.surname());
+        employee.setBirthday(employeeDTO.birthday());
+        employee.setPhone(employeeDTO.phone());
+        employee.setDepartment(departmentRepository.findById(employeeDTO.departmentId()).orElseThrow(NotFoundException::new));
 
         employeeRepository.save(employee);
         return employeeMapper.toEmployeeDto(employee);
@@ -94,5 +99,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private Employee findById(Integer id) {
         return employeeRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    private List<EmployeeDTO> getAllBySort() {
+        return employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "familyName"))
+                .stream()
+                .map(employeeMapper::toEmployeeDto)
+                .toList();
     }
 }

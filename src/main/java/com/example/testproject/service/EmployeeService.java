@@ -5,6 +5,7 @@ import com.example.testproject.dto.EmployeeDTO;
 import com.example.testproject.dto.EmployeeDTOForXML;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.JAXBException;
 import java.util.List;
 
 public interface EmployeeService {
@@ -14,5 +15,5 @@ public interface EmployeeService {
     EmployeeDTO createEmployee(EmployeeDTO employeeDTO);
     EmployeeDTO updateEmployee(EmployeeDTO employeeDTO, Integer id);
     void deleteEmployee(Integer id);
-    List<EmployeeDTOForXML> forExport();
+   String forExport() throws JAXBException;
 }
