@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/changesets/script.sql
+
+
+
+
+
